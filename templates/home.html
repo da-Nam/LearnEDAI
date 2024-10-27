@@ -1,0 +1,117 @@
+<!DOCTYPE HTML>
+<html class="scroll-smooth">
+	<head>
+        <link href="{{url_for('static',filename='css/output.css')}}" rel="stylesheet">
+        <title>EDALLM</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+<!--		 <link rel="stylesheet" href="/static/assets/css/mainstyles.css" /> -->
+        <link rel="shortcut icon" href="https://files.catbox.moe/4y5wfi.jpg">
+        <!-- <script>document.documentElement.classList.add('js')</script> -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	</head>
+    <body>
+        <section id="home" class="bg-nord0">
+            
+            <div class="flex h-screen justify-end">
+                <div class="w-full flex flex-col m-2  mr-0 bg-nord1 border border-nord3 rounded-lg shadow-lg delay-[100ms] duration-[300ms] taos:translate-x-[-30px] taos:opacity-0">
+                    <div>
+                        <div class="size-full h-10 bg-nord3 flex
+                                    border border-nord1 rounded-lg rounded-b-none shadow-md justify-center">
+                        </div>
+                    </div>
+                    <div id="message_area" class="size-full bg-nord0 flex-1 scale-[98%] overflow-y-auto
+                             border border-nord1 rounded-lg rounded-b-none shadow-md justify-self-center">
+                        <div class="flex items-end bg-nord9 m-5 rounded-lg p-3">
+                            <div class="w-full">
+                                <div class="flex items-end mb-2 w-full">
+                                    <img id="chatprofile" class="w-12 h-12 mr-3 ml-3 rounded-full object-fit" src="https://files.catbox.moe/ozgwnb.png" alt="User Profile"/>
+                                    <div class="text-base ml-3 mr-3 mb-3 font-extrabold">GPT Tutor</div>
+                                    <div class="msg-info-time"></div>
+                                </div>
+                                <div class="text-nord0 text-lg text-left">
+                                    What would you like to learn today?
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                        <form id="input_area" class="w-full mb-5 flex items-end justify-self-center scale-x-[98%] border-nord0 bg-nord1 p-1">
+                            <input id="text_input" type="text" class="bg-nord1 w-full text-nord4 p-2 mr-1" placeholder="Enter your message...">
+                            <button type="submit" class="bg-nord9 hover:bg-nord10 p-2 ml-1">Send</button>
+                        </form>
+
+                </div>
+                <div class="w-full max-w-xs m-2 p-8 mr-2 ml-2 mb-2p-10 bg-[image:linear-gradient(25deg,#3b4252_0%,#3b4252_50%,#4c566a_50%,#4c566a_100%)] 
+                    border border-nord3 rounded-lg shadow-lg delay-[100ms] duration-[300ms] taos:translate-x-[30px] taos:opacity-0">
+                    <div class="flex flex-col items-center pb-10">
+                        <img id="profileImage" class="w-16 h-16 mb-3 rounded-full object-fit shadow-lg" src="https://placewaifu.com/image/200" alt="User Profile"/>
+                        <h5 class="mb-1 text-s font-semibold text-nord5 ">{{name}}</h5>
+                        <span class="text-xs text-nord4">Professional Learner</span>
+                        <hr class="h-px mt-3 bg-nord4 border-0 w-56 justify-center">
+                        <div class="flex mt-4 md:mt-6">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <script src="https://unpkg.com/taos@1.0.5/dist/taos.js"></script>
+        <script>
+                const msgerForm = get("#input_area");
+                const msgerInput = get("#text_input");
+                const msgerChat = get("#message_area");
+
+                const BOT_IMG = "https://files.catbox.moe/ozgwnb.png";
+                const PERSON_IMG = "https://files.catbox.moe/r4wxdo.png";
+                const BOT_NAME = "GPT Tutor";
+                const PERSON_NAME = '{{name}}';
+
+                msgerForm.addEventListener("submit", event => {
+                    event.preventDefault();
+
+                    const msgText = msgerInput.value;
+                    if (!msgText) return;
+                    console.log(msgText);
+
+                    appendMessage(PERSON_NAME, PERSON_IMG, true, msgText);
+                    msgerInput.value = "";
+                    botResponse(msgText);
+                });
+                function appendMessage(name, img, reverse, text) {
+                    //   Simple solution for small apps
+                    const reverseClass = reverse ? "flex-row-reverse" : "";
+                    const lefri = reverse ? "text-right" : "text-left";
+
+                    const msgHTML = `
+                        <div class="flex items-end bg-nord9 m-5 rounded-lg p-3">
+                            <div class="w-full">
+                                <div class="flex items-end mb-2 w-full ${reverseClass}">
+                                    <img id="chatprofile" class="w-12 h-12 mr-3 ml-3 rounded-full object-fit" src="${img}" alt="User Profile"/>
+                                    <div class="text-base ml-3 mr-3 mb-3 font-extrabold">${name}</div>
+                                </div>
+                                <div class="text-nord0 text-lg ${lefri}">
+                                ${text}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+                    msgerChat.insertAdjacentHTML("beforeend", msgHTML);
+                    msgerChat.scrollTop += 500;
+                }
+
+                function get(selector, root = document) {
+                    return root.querySelector(selector);
+                }
+
+                // Bot Response
+                function botResponse(rawText) {
+                    $.get("/callmeskibidi", { msg: rawText }).done(function (data) {
+                        console.log(rawText);
+                        console.log(data);
+                        const msgText = data;
+                        appendMessage(BOT_NAME, BOT_IMG, false, msgText);
+                    });
+                }
+        </script>
+    </body>
+</html>

@@ -1,0 +1,17 @@
+<!DOCTYPE HTML>
+<html class="scroll-smooth">
+	<head>
+        <title>{% block title %}{% endblock %}</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<!-- <link rel="stylesheet" href="/static/assets/css/mainstyles.css" /> -->
+        <link href="{{url_for('static',filename='css/output.css')}}" rel="stylesheet">
+        <link rel="shortcut icon" href="https://files.catbox.moe/4y5wfi.jpg">
+        <script>document.documentElement.classList.add('js')</script>
+	</head>
+    <body>
+        {% block body %}
+        {% endblock %}
+        <script src="https://unpkg.com/taos@1.0.5/dist/taos.js"></script>
+    </body>
+</html>
