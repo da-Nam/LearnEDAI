@@ -30,7 +30,7 @@
                                     <div class="msg-info-time"></div>
                                 </div>
                                 <div class="text-nord0 text-lg text-left">
-                                    What would you like to learn today?
+                                    You will be learning about
                                 </div>
                             </div>
                         </div>
@@ -59,11 +59,24 @@
                 const msgerForm = get("#input_area");
                 const msgerInput = get("#text_input");
                 const msgerChat = get("#message_area");
+                const chatHistory = {{ chat_history | tojson }};
 
                 const BOT_IMG = "https://files.catbox.moe/ozgwnb.png";
                 const PERSON_IMG = "https://files.catbox.moe/r4wxdo.png";
                 const BOT_NAME = "GPT Tutor";
                 const PERSON_NAME = '{{name}}';
+
+                window.onload = () => {
+                    chatHistory.forEach(msg => {
+                        const isUser = msg.role === "user";
+                        appendMessage(
+                            isUser ? PERSON_NAME : BOT_NAME, 
+                            isUser ? PERSON_IMG : BOT_IMG, 
+                            isUser, 
+                            msg.content
+                        );
+                    });
+                };
 
                 msgerForm.addEventListener("submit", event => {
                     event.preventDefault();
@@ -102,6 +115,7 @@
                 function get(selector, root = document) {
                     return root.querySelector(selector);
                 }
+                // const convoID = crypto.randomUUID();
 
                 // Bot Response
                 function botResponse(rawText) {

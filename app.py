@@ -1,7 +1,17 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, session
+# from gptutils import get_response
+import os
+from dotenv import load_dotenv
+from flask_session import Session
 from gptutils import get_response
 
+load_dotenv()
+
 app = Flask(__name__, static_folder='static')
+app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "default_secret_key")
+app.config["SESSION_TYPE"] = "filesystem"
+
+Session(app)
 
 @app.route("/")
 def hello_world():
@@ -9,7 +19,8 @@ def hello_world():
 
 @app.route('/home')
 def home():
-    return render_template('home.html', name="you", interviews=[12,1], unfinished_interviews=1)
+    chat_history = session.get('chat_history', [])
+    return render_template('home.html', name="you", chat_history=chat_history)
 
 @app.route("/callmeskibidi", methods=["GET", "POST"])
 def better_call_gpt():
